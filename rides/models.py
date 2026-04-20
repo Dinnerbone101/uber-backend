@@ -1,0 +1,22 @@
+from django.db import models
+
+# Create your models here.
+class Driver(models.Model):
+    name = models.CharField(max_length=100)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    is_available = models.BooleanField(default=True)
+
+
+class Rider(models.Model):
+    name = models.CharField(max_length=100)
+
+class Ride(models.Model):
+    rider = models.ForeignKey(Rider, on_delete=models.CASCADE)
+    driver = models.ForeignKey(Driver, on_delete=models.CASCADE, null=True, blank=True)
+    pickup_lat = models.FloatField()
+    pickup_lon = models.FloatField()
+    drop_lat = models.FloatField()
+    drop_lon = models.FloatField()
+    status = models.CharField(max_length=20)
+    fare = models.FloatField()
