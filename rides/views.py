@@ -2,13 +2,18 @@ from django.http import JsonResponse
 from .models import Rider, Ride, Driver
 from .utils import *
 import json
+from django.views.decorators.csrf import csrf_exempt
 
-def create_ride(request):
+@csrf_exempt
+def create_ride(request,rider_id):
         
         if request.method != "POST":
             return JsonResponse({"error": "Only POST allowed"})
 
-        rider = Rider.objects.first()
+        rider = Rider.objects.get(id = rider_id)
+        if not rider:
+             return JsonResponse({"error" : "No such rider exists"})
+        
         data = json.loads(request.body)
 
         
@@ -45,7 +50,7 @@ def create_ride(request):
 
 
 
-
+@csrf_exempt
 def start_ride(request, ride_id):
 
     if request.method != "POST":
@@ -67,6 +72,7 @@ def start_ride(request, ride_id):
         return JsonResponse({"error": "Ride not found"})
     
 
+@csrf_exempt
 def complete_ride(request,ride_id):
 
     if request.method != "POST":
@@ -88,7 +94,7 @@ def complete_ride(request,ride_id):
     except Ride.DoesNotExist:
          return JsonResponse({"error": "Ride not found"})
     
-    
+@csrf_exempt
 def cancel_ride(request,ride_id):
     if request.method != "POST":
         return JsonResponse({"error": "Only POST allowed"})
